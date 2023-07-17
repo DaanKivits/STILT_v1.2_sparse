@@ -1,0 +1,45 @@
+#----------------------------------------------------------------
+# University of Houston
+# Air Quality Modeling and Monitoring Center
+# 218 Old Science Building
+# Houston, TX 77204-5048
+# USA
+#
+# email: sbkim@math.uh.edu (Dr. Seung-Bum Kim)
+#        dwbyun@math.uh.edu (Dr. Daewon W. Byun)
+#----------------------------------------------------------------
+
+rams2arl.exe << ieof
+RAMS Grid ID       |3
+# of layers in Z   |32
+# of BKSP          |4 
+Start/end date     |1993090600 1993090623
+OUTPUT file        |RAMS_test
+RAMS Header file   |/aqm/data/TNRCC_RAMS_4grid/r2-A-1993-09-06-000000-head.txt
+Time interval(sec) |3600
+#RAMS files to proc|24
+RAMS files         |/aqm/data/TNRCC_RAMS_4grid/r2-A-1993-09-06-000000-g3.vfm
+                   |/aqm/data/TNRCC_RAMS_4grid/r2-A-1993-09-06-010000-g3.vfm
+                   |/aqm/data/TNRCC_RAMS_4grid/r2-A-1993-09-06-020000-g3.vfm
+                   |/aqm/data/TNRCC_RAMS_4grid/r2-A-1993-09-06-030000-g3.vfm
+                   |/aqm/data/TNRCC_RAMS_4grid/r2-A-1993-09-06-040000-g3.vfm
+                   |/aqm/data/TNRCC_RAMS_4grid/r2-A-1993-09-06-050000-g3.vfm
+                   |/aqm/data/TNRCC_RAMS_4grid/r2-A-1993-09-06-060000-g3.vfm
+                   |/aqm/data/TNRCC_RAMS_4grid/r2-A-1993-09-06-070000-g3.vfm
+                   |/aqm/data/TNRCC_RAMS_4grid/r2-A-1993-09-06-080000-g3.vfm
+                   |/aqm/data/TNRCC_RAMS_4grid/r2-A-1993-09-06-090000-g3.vfm
+                   |/aqm/data/TNRCC_RAMS_4grid/r2-A-1993-09-06-100000-g3.vfm
+                   |/aqm/data/TNRCC_RAMS_4grid/r2-A-1993-09-06-110000-g3.vfm
+                   |/aqm/data/TNRCC_RAMS_4grid/r2-A-1993-09-06-120000-g3.vfm
+                   |/aqm/data/TNRCC_RAMS_4grid/r2-A-1993-09-06-130000-g3.vfm
+                   |/aqm/data/TNRCC_RAMS_4grid/r2-A-1993-09-06-140000-g3.vfm
+                   |/aqm/data/TNRCC_RAMS_4grid/r2-A-1993-09-06-150000-g3.vfm
+                   |/aqm/data/TNRCC_RAMS_4grid/r2-A-1993-09-06-160000-g3.vfm
+                   |/aqm/data/TNRCC_RAMS_4grid/r2-A-1993-09-06-170000-g3.vfm
+                   |/aqm/data/TNRCC_RAMS_4grid/r2-A-1993-09-06-180000-g3.vfm
+                   |/aqm/data/TNRCC_RAMS_4grid/r2-A-1993-09-06-190000-g3.vfm
+                   |/aqm/data/TNRCC_RAMS_4grid/r2-A-1993-09-06-200000-g3.vfm
+                   |/aqm/data/TNRCC_RAMS_4grid/r2-A-1993-09-06-210000-g3.vfm
+                   |/aqm/data/TNRCC_RAMS_4grid/r2-A-1993-09-06-220000-g3.vfm
+                   |/aqm/data/TNRCC_RAMS_4grid/r2-A-1993-09-06-230000-g3.vfm
+ieof

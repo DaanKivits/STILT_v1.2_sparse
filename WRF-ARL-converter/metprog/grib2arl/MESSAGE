@@ -1,0 +1,12 @@
+ Command Line Arguments: 
+   Cntr -           60         -80
+   Grid -            3
+   Size -          100         100          20
+   SfcP -            1
+   Rain -            6
+   Init -            1
+ ---------------------------------------------------------
+ Opened file: /projects/0/ctdas/PARIS/DATA/meteo/STILT
+ -----------------------------------------------------
+ SUBROUTINE analyze ...
+ Input buffer allocation:     16777215

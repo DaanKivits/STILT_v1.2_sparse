@@ -1,0 +1,91 @@
+33
+Sample file containing variable specifications for the wrfgrib2arl program
+
+$Id: var_sample,v 1.18 2006/05/05 17:43:29 trn Exp $
+
+The format of this file is as follows:
+
+!   Header:
+!         1st line: contains integer (list-directed I/O) ndatlin: 
+!                   number of data lines to follow the header
+!         subsequent lines: any number of header lines (ignored), followed
+!         by line with the string ENDHEADER in columns 1-9
+!   Data lines: (ndatlin lines, each containing in list-directed I/O format)
+! VNAME    4-character variable name, enclosed in ''
+! STA_XY   1-character xy-staggering indicator, one of ('x', 'y', or ' '), case-insensitive
+! STA_Z    1-character z-staggering indicator, one of ('z', or ' '), case-insensitive
+! I_23D    integer dimensionality indicator, either 2 or 3 (for 2d/3d fields)
+! KPDS5    integer variable code (kpds5)
+! KPDS6    integer level type (kpds6)
+! KPDS7    integer level value (kpds7; ignored for 3d variables)
+! CNVRT    real conversion factor to be applied to data before output
+
+ VNAME  STA_XY STA_Z I_23D KPDS5   KPDS6  KPDS7  CNVRT
+if (.not. fluxflg): (ndatlin=25)
+ 'UWND' 'X'    ' '   3      33     119    -99    1.0
+ 'VWND' 'Y'    ' '   3      34     119    -99    1.0
+ 'DZDT' ' '    'Z'   3      40     119    -99    1.0
+
+if (fluxflg): (ndatlin=33)
+ 'MUU0' ' '    ' '   2     154       1    -99    1.0
+ 'MUV0' ' '    ' '   2     157       1    -99    1.0
+ 'UWND' 'X'    ' '   3     194     119    -99    1.0
+ 'VWND' 'Y'    ' '   3     195     119    -99    1.0
+ 'WWND' ' '    'Z'   3     196     119    -99    1.0
+ 'CFU1' ' '    'Z'   3     187     119    -99    1.0
+ 'CFD1' ' '    'Z'   3     197     119    -99    1.0
+ 'DFU1' ' '    ' '   3     198     119    -99    1.0
+ 'EFU1' ' '    ' '   3     199     119    -99    1.0
+ 'DFD1' ' '    ' '   3     200     119    -99    1.0
+ 'EFD1' ' '    ' '   3     201     119    -99    1.0
+
+unused:
+ 'MUU0' 'X'    ' '   3     161     119    -99    1.0
+ 'RUM0' 'X'    ' '   3     162     119    -99    1.0
+ 'MUV0' 'Y'    ' '   3     163     119    -99    1.0
+ 'RVM0' 'Y'    ' '   3     164     119    -99    1.0
+ 'RW00' ' '    'Z'   3     165     119    -99    0.01
+ 'WW00' ' '    'Z'   3      38     119    -99    1.0
+ 'WWND' ' '    'Z'   3     166     119    -99    0.01
+ 'PH00' ' '    'Z'   3     136     119    -99    1.0
+ 'PHB0' ' '    'Z'   3     135     119    -99    1.0
+ 'MFLX' ' '    ' '   2     168       1    -99    1.0
+ 'TKEN' ' '    ' '   3     159     119    -99    1.0
+ 'TKEN' ' '    ' '   3     158     119    -99    1.0
+ 'NPCP' ' '    ' '   2     253       1    -99    1.0
+ 'CPCP' ' '    ' '   2     254       1    -99    1.0
+
+ENDHEADER
+ 'MUU0' ' '    ' '   2     154       1    -99    1.0
+ 'MUV0' ' '    ' '   2     157       1    -99    1.0
+ 'UWND' 'X'    ' '   3     194     119    -99    1.0
+ 'VWND' 'Y'    ' '   3     195     119    -99    1.0
+ 'WWND' ' '    'Z'   3     196     119    -99    1.0
+ 'CFU1' ' '    'Z'   3     187     119    -99    1.0
+ 'CFD1' ' '    'Z'   3     197     119    -99    1.0
+ 'DFU1' ' '    ' '   3     198     119    -99    1.0
+ 'EFU1' ' '    ' '   3     199     119    -99    1.0
+ 'DFD1' ' '    ' '   3     200     119    -99    1.0
+ 'EFD1' ' '    ' '   3     201     119    -99    1.0
+ 'MSFT' ' '    ' '   2     189       1    -99    1.0
+ 'MSFU' 'X'    ' '   2     190       1    -99    1.0
+ 'MSFV' 'Y'    ' '   2     191       1    -99    1.0
+ 'ALT0' ' '    ' '   3     132     119    -99    1.0
+ 'MUBA' ' '    ' '   2     139       1    -99    1.0
+ 'MUPE' ' '    ' '   2     140       1    -99    1.0
+ 'THET' ' '    ' '   3      13     119    -99    1.0
+ 'PRES' ' '    ' '   3     142     119    -99    0.01
+ 'PPRE' ' '    ' '   3       1     119    -99    0.01
+ 'SPHU' ' '    ' '   3      53     119    -99    1.0
+ 'SHTF' ' '    ' '   2     155       1    -99    1.0
+ 'USTR' ' '    ' '   2     167       1    -99    1.0
+ 'LHTF' ' '    ' '   2     121       1    -99    1.0
+ 'SHGT' ' '    ' '   2       8       1    -99    1.0
+ 'PRSS' ' '    ' '   2       1       1    -99    0.01
+ 'T02M' ' '    ' '   2      11     105      2    1.0
+ 'U10M' ' '    ' '   2      33     105     10    1.0
+ 'V10M' ' '    ' '   2      34     105     10    1.0
+ 'HPBL' ' '    ' '   2     221       1    -99    1.0
+ 'SOLW' ' '    ' '   2     144     112     10    1.0
+ 'DSWF' ' '    ' '   2     204       1    -99    1.0
+ 'DLWF' ' '    ' '   2     205       1    -99    1.0

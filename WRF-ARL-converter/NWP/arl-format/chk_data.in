@@ -1,0 +1,9 @@
+/squall/dap02apr180gb/p1229-carbon/Metdata/wrf10day.arl
+4
+-1,1,1,-1,1,1
+
+$Id: chk_data.in,v 1.1 2005/09/19 17:24:21 trn Exp $
+The above is a sample input file for chk_data.f (redirect std in)
+First line: arl format file name
+Second line: specifies full inventory, for all times found in file
+Third line: suppresses printout of sample values

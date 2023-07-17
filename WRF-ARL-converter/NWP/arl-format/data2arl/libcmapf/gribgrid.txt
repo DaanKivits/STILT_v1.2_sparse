@@ -1,0 +1,183 @@
+When using the CMAPF routines with grib files, it is useful to know how to
+specify such grids in terms of CMAPF parameters.
+
+The following information is extracted from the GRIB documentation
+(ftp://ftp.ncep.noaa.gov/pub/nws/nmc/docs/gribed1/).  It describes the Grid
+Description System (GDS) encoding of the polar conformal grids.  We accompany
+these descriptions with coding to initialize the grids for CMAPF.
+
+--------------------------------------------------------------------------------
+
+POLAR STEREOGRAPHIC GRIDS
+(GDS Octets 7 - 32)
+
+	OCTET NO.	CONTENT & MEANING
+
+	 7 -  8	Nx - Number of points along x-axis
+	 9 - 10	Ny - Number of points along y-axis
+	11 - 13	La1 - Latitude of first grid point
+	14 - 16	Lo1 - Longitude of first grid point
+	     17	Resolution and component flags (see Table 7)
+	18 - 20	Lov - The orientation of the grid;
+		      i.e., the east longitude value of the
+		      meridian which is parallel to the
+		      y-axis (or columns of the grid) along
+		      which latitude increases as the
+		      y-coordinate increases. (Note: The
+		      orientation longitude may, or may not,
+		      appear within a particular grid.)
+	21 - 23	Dx - the X-direction grid length
+			  (see Note 2)
+	24 - 26	Dy - the Y-direction grid length
+			  (see note 2)
+	     27	Projection center flag  (see note 5)
+	     28	Scanning mode           (see Table 8)
+	29 - 32	Set to 0 (reserved)
+
+To create a maparam that conforms to a Polar Stereographic grid with these
+parameters, use
+
+  dimension stcprm(9)
+  call stlmbr(stcprm, 90., 0.)
+C for North Polar, tangent latitude is 90., and reflon is irrelevant
+
+  call stcm1p(stcprm, 1.,1., xla1,xlo1,  60.,xlov, Dx,0.)
+
+Note: for South Polar, 90. is replaced by -90. and 60. by -60.  xla1, xlo1, and
+xlov must be converted from millidegrees to degrees, Dx must be converted from
+meters to kilometers, and we are assuming Dx and Dy are the same, i.e. the
+grid spacing is the same in the x- and the y- direction.  Since xlov is defined
+by grib as the longitude whose meridian is parallel to the y-axis, and CMAPF's
+"orient" is by definition the angle between the meridian and the y-axis, orient
+is zero.
+
+--------------------------------------------------------------------------------
+
+LAMBERT CONFORMAL SECANT OR TANGENT CONE GRIDS
+(GDS Octets 7 - 42)
+
+	OCTET NO.	CONTENT & MEANING
+
+	 7 -  8	Nx - Number of points along x-axis
+	 9 - 10	Ny - Number of points along y-axis
+	11 - 13	La1 - Latitude of first grid point
+	14 - 16	Lo1 - Longitude of first grid point
+	     17	Resolution and component flags (see Table 7)
+	18 - 20	Lov - The orientation of the grid;
+  		      i.e., the east longitude value of the
+	      	meridian which is parallel to the
+		      y-axis (or columns of the grid) along
+		      which latitude increases as the
+				y-coordinate increases. (Note: The
+				orientation longitude may, or may not,
+				appear within a particular grid.)
+	21 - 23	Dx - the X-direction grid length
+			  (see note 2)
+	24 - 26	Dy - the Y-direction grid length
+			  (see Note 2)
+	     27	Projection center flag   (see note 5)
+	     28	Scanning mode            (see Table 8)
+	29 - 31	Latin 1 - The first latitude from the pole
+				at which the secant cone cuts the spherical
+				earth.       (See Note 8)
+	32 - 34	Latin 2 - The second latitude from the pole
+				at which the secant cone cuts the spherical
+				earth.       (See Note 8)
+	35 - 37	Latitude of southern pole (millidegrees)
+	38 - 40	Longitude of southern pole (millidegrees)
+	41 - 42	Reserved (set to 0)
+
+To create a maparam that conforms to a Lambert Conformal grid with these
+parameters, use
+
+dimension stcprm(9)
+
+call stlmbr(stcprm, eqvlat(xltin1,xltin2), xlov)
+
+call stcm1p(stcprm, 1.,1., xla1,xlo1, xltin2,xlov, Dx,0.)
+
+Notes:  we have used Lov for reflon, the longitude 180 degrees away from the
+necessary cut in the map.  In most cases, this will not interfere with the
+grid.  In some cases, another value may be needed.  Sinve Lov is defined as the
+longitude of the vertical meridian, and orient is defined as the angle the
+meridian makes with the vertical, orient will be zero.  La1, Lo1, Lov, Latin1
+and Latin2 must be converted from millidegrees to degrees, and Dx from meters to
+kilometers.  We are assuming that the spacing Dx in the x-direction and Dy in
+the y-direction have the same value.
+
+The above definitions of Latin1 and Latin2 are based on the erroneous notion
+that the projection cone can somehow be forced to pass through Latin1 and Latin2
+simultaneously.  It cannot, and there is no reason why anyone would particularly
+want it to. Rather, Latin1 and Latin2 should be defined as the two latitudes at
+which the size of a grid cell has the value Dx.  Between these latitudes, the
+grid size is greater than Dx, while elsewhere the gridsize is less than Dx.
+Because the gridsize is the same for both Latin1 and Latin2, it does not matter
+which we use in the call to stcm1p.
+
+In any case, if Latin1 = Latin2, then eqvlat will return their common value,
+which will be the tangent latitude of the cone, described as the "tangent cone"
+case.  If it is certain that all needed grids will be tangent cone cases, the
+call to eqvlat may be dropped to save time:
+
+call stlmbr(stcprm, xltin2, xlov)
+
+In any case, it is always safe to use eqvlat, which should never be replaced by
+the plausible but incorrect value (Latin1+Latin2)/2.
+
+For CMAPF, the parameters Latitude and Longitude of Southern Pole above may be
+disregarded.  They refer to a Miller's bipolar (actually, biconic) oblique conic
+projection.  This exotic projection, signaled by the flags in octet 17, should
+seldom be encountered.  The conic conformal projections in CMAPF are neither
+oblique nor bipolar (biconic).
+
+--------------------------------------------------------------------------------
+
+MERCATOR GRIDS
+(GDS Octets 7 - 42)
+
+	OCTET NO.	CONTENT & MEANING
+
+	 7 -  8	Ni - Number of points along a
+			  latitude circle
+	 9 - 10	Nj - Number of points along a
+			  longitude meridian
+	11 - 13	La1 - Latitude of first grid point
+	14 - 16	Lo1 - Longitude of first grid point
+	     17	Resolution and component flags (see Table 7)
+	18 - 20	La2 - latitude of last grid point
+	21 - 23	Lo2 - longitude of last grid point
+	24 - 26	Latin - The latitude(s) at which the
+				Mercator projection cylinder
+				intersects the earth.
+	     27	Reserved (set to 0)
+	     28	Scanning mode (see Table 8)
+	29 - 31	Di - the longitudinal direction increment
+			  (see Note 2)
+	32 - 34	Dj - the latitudinal direction increment
+			  (see note 2)
+	35 - 42	Reserved (set to 0)
+
+
+To create a maparam that conforms to a Mercator grid with these parameters, use
+
+dimension stcprm(9)
+
+call stlmbr(stcprm, 0., (xlo1+xlo2)/2.)
+
+call stcm1p(stcprm, 1.,1., xla1,xlo1, xlatin,(xlo1+xlo2)/2., Di,0.)
+
+Notes:  Latin, La1, Lo1, La2 and Lo2 must be converted from millidegrees to
+degrees, while Di and Dj must be converted from meters to kilometers.
+
+0. is the tangent latitude for a Mercator Cylindrical Projection.  A good
+value for the reference longitude reflon, defined as 180 degrees from the cut
+longitude, is likely to be the mid longitude in the grid, .5*(Lo1+Lo2).  In some
+circumstances, another value may be required.  If a grid is expected to span
+all longitudes, the first longitude Lo1 and the last lo2 may be mapped into the
+same point.  Any point on the cut longitude must be treated with care.  Hence,
+if Lo2 = Lo1+360., it may be safer to replace the above stcm1p with
+
+call stcm1p(stcprm, (Ni+1.)/2.,1., xla1,(xlo1+xlo2)/2., xlatin,(xlo1+xlo2)/2.,
+               Di,0.)
+
+thereby using a pin point in the middle of the grid.

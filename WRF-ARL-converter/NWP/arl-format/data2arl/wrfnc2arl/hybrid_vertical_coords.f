@@ -1,0 +1,188 @@
+! Use emacs f90-mode:   -*- mode:f90  -*-
+module hybrid_vertical_coords_module
+
+contains
+
+  subroutine hybrid_vertical_coords (iprint, ncid, nfull, ntimes, iu, mdlid, ierr)
+
+    ! This routine added to support the WRF hybrid vertical coordinate in STILT
+    ! This routine reads needed global attributes and, if needed (hyb_opt=2 or -1):
+    !  - resets the mdlid for hybrid (=2, 9WRF/NWRF) / TF coordinates (=-1, AWRF/DWRF)
+    !  - reads in needed constants and writes them out to a text file in table format:
+    !     fname='hybrid_wrfvcoords.txt'
+    ! Written by Thomas Nehrkorn, AER, February 2018
+
+    use setvar_module
+
+    implicit none
+
+    include 'netcdf.inc'
+
+    ! arguments:
+    integer, intent(in) :: iprint, ncid, nfull, ntimes, iu
+    character (len=4), intent(inout) :: mdlid
+    integer, intent(out) :: ierr
+    integer :: ikke
+    !automatic arrays
+    integer, parameter :: npar=8
+    real :: wrfvcoords(nfull,npar), ptops(ntimes)
+    real, dimension (:,:), allocatable :: onecoord
+    ! local variables:
+    character (len=3) :: wrfvlabels(npar)
+    integer :: ndim,dimlen(nf_max_var_dims),n3d,varid
+    logical :: use_hyb, use_16
+    
+    character (len=4) :: saved_mdlid
+    integer, parameter :: lchar=80
+    CHARACTER(len=lchar) :: label, title, fname
+    integer :: hyb_opt, status, ilabel, ipar, nlevs, k
+
+    saved_mdlid = mdlid
+    fname='hybrid_wrfvcoords.txt'
+    title=' '
+    wrfvcoords = 0.
+    wrfvlabels(1)='C1H'
+    wrfvlabels(2)='C2H'
+    wrfvlabels(3)='C3H'
+    wrfvlabels(4)='C4H'
+    wrfvlabels(5)='C1F'
+    wrfvlabels(6)='C2F'
+    wrfvlabels(7)='C3F'
+    wrfvlabels(8)='C4F'
+
+    ierr=0
+    ! First check global attributes:
+    do ilabel=1,2
+       if (ilabel .eq. 1) then
+          label='HYBRID_OPT'
+          status = NF_GET_ATT_INT(ncid, nf_global, label, hyb_opt)
+       else
+          label='TITLE'
+          status = NF_GET_ATT_TEXT(ncid, nf_global, label, title)
+       endif
+       IF(status .NE. nf_noerr) THEN
+          if (iprint .ge. 2) write (*,*) 'No ',trim(label),' global attribute in file'
+          if (ilabel .eq. 1) hyb_opt=-1
+          if (ilabel .eq. 1) title=' '
+       ELSE
+          IF(iprint .ge. 2) then
+             WRITE(*,*) trim(label),' = '
+             if (ilabel .eq. 1) write (*,*) '    ',hyb_opt
+             if (ilabel .eq. 2) write (*,*) '    ',trim(title)
+          endIF
+       ENDIF
+    enddo
+    use_16 = mdlid .eq. 'DWRF' .or. mdlid .eq. 'NWRF'
+
+    if (hyb_opt .eq. 2) then
+       use_hyb = .TRUE.
+       if (use_16) then
+          mdlid = 'NWRF'
+       else
+          mdlid = '9WRF'
+       endif
+    elseif (hyb_opt .eq. -1) then
+       use_hyb = .FALSE.
+       if (use_16) then
+          mdlid = 'DWRF'
+       else
+          mdlid = 'AWRF'
+       endif
+    else
+       if (hyb_opt .ne. 0) write (*,*) 'WARNING: Unexpected value of hyb_opt: ',hyb_opt
+       use_hyb = mdlid .eq. '9WRF' .or. mdlid .eq. 'NWRF'
+    endif
+    if (iprint .ge. 3) write (*,*) 'hyb_opt from WRF input file is ',hyb_opt,' use_hyb= ',use_hyb
+    if (iprint .ge. 1 .and. mdlid .ne. saved_mdlid) &
+         write (*,*) 'mdlid changed to: ',mdlid
+
+    ! if needed, get and write out c1h - c4f coordinate parameters
+    if (use_hyb) then
+       ! get dimensions and values for: ptop (delay error exit until all inputs are done)
+       label='P_TOP'
+       call setvar(iprint .ge. 8,ncid,label,varid,n3d,ndim,dimlen,status)
+       if (status .ne. 0) then
+          ierr = ierr + 1
+          write (*,*) 'Error from setvar getting varid/dimensions for ', &
+               trim(label)
+       else
+          if (ndim .ne. 1 .or. dimlen(1) .ne. ntimes) then
+             write (*,*) 'Bad dimensions for ',trim(label), &
+                  ' ndim=',ndim,' dimlen(1)=',dimlen(1),' ntimes=',ntimes
+             ierr = ierr + 1
+             status=1
+          end if
+       end if
+       if (status .eq. 0) then
+          status = nf_get_var_real(ncid,varid,ptops)
+          if (status .ne. nf_noerr) then
+             write (*,*) 'Error getting values for ',trim(label)
+             ierr = ierr + 1
+          endif
+          !TBD: could check here that all p_top are the same (should be constant with time)
+       endif
+
+       ! get dimensions and values for: c1h - c4f (delay error exit until all inputs are done)
+       do ipar=1,npar
+          call setvar(iprint .ge. 8,ncid,wrfvlabels(ipar),varid,n3d,ndim,dimlen,status)
+          if (status .ne. 0) then
+             ierr = ierr + 1
+             write (*,*) 'Error from setvar getting varid/dimensions for ', &
+                  trim(wrfvlabels(ipar))
+          else
+             nlevs=dimlen(1)
+             if (ndim .ne. 2 .or. &
+                  (ipar .le. 4 .and. nlevs .ne. nfull-1) .or. &
+                  (ipar .gt. 4 .and. nlevs .ne. nfull) ) then
+                write (*,*) 'Bad dimensions for ',trim(wrfvlabels(ipar)), &
+                     ' ndim=',ndim,' nlevs=',nlevs,' nfull=',nfull
+                ierr = ierr + 1
+                status=1
+             end if
+          end if
+          if (status .eq. 0) then
+             allocate(onecoord(dimlen(1),dimlen(2)))
+             status = nf_get_var_real(ncid,varid,onecoord)
+            if (status .ne. nf_noerr) then
+                write (*,*) 'Error getting values for ',trim(wrfvlabels(ipar))
+                ierr = ierr + 1
+             else
+                wrfvcoords(1:nlevs,ipar) = onecoord(1:nlevs,1)
+             deallocate(onecoord)
+!wrfvcoords(1:nlevs,ipar) = onecoord(1:nlevs)
+             endif
+          endif
+       enddo
+       ! Error exit in case of an netcdf input errors above:
+       if (ierr .ne. 0) return
+       ! Now write out values: (Immediate error exits as needed here)
+       if (iprint .ge. 2) write (*,*) 'Writing WRF hybrid vertical coordinate parameters to ',trim(fname)
+       open(unit=iu,file=trim(fname),form='formatted',iostat=status)
+       if (status .ne. 0) then
+          write (*,*) 'Error opening ',trim(fname)
+          ierr=100
+          return
+       end if
+       write (iu,'(2i10,g20.8)') nfull, npar, ptops(1)
+       write (iu,'(a)') 'Output from wrfnc2arl: WRF hybrid vertical coordinate parameters'
+       write (iu,'(a)') 'First line contains: nfull, npar, ptop (Pa)'
+       write (iu,'(2a)') 'wrfout global attribute TITLE: ',trim(title)
+       write (iu,'(a,i10)') 'wrfout global attribute HYBRID_OPT: ',hyb_opt
+       write (iu,'(a)') 'Line following the ENDHEADER line contains the names of the npar parameters'
+       write (iu,'(a)') 'ENDHEADER'
+       write (label,'(a,i4,a)') '(',npar,'a4)'
+       write (iu,label) (wrfvlabels(ipar),ipar=1,npar)
+       write (label,'(a,i4,a)') '(',npar,'g17.8)'
+       do k=1,nlevs
+          write (iu,label) (wrfvcoords(k,ipar),ipar=1,npar)
+       end do
+       close(unit=iu,iostat=status)
+       if (status .ne. 0) then
+          write (*,*) 'Error closing ',trim(fname)
+          ierr=200
+          return
+       endif
+    endif
+    return
+  end subroutine hybrid_vertical_coords
+end module hybrid_vertical_coords_module

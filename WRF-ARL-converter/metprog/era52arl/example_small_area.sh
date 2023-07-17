@@ -1,0 +1,60 @@
+#!/bin/sh
+# Example bash script for retrieving ERA5 for a small area.
+# Author: Alice Crawford   Organization: NOAA/OAR/ARL
+
+# Example for downloading and converting ERA5 data on pressure levels
+# for a relatively small area.
+
+# python call
+MDL="python"
+
+#Location of get_era5_cds.py
+# PDL=$HOME/hysplit_metdata
+PDL=$HOME/STILT/WRF-ARL-converter/metprog/era52arl
+year=2021
+
+#small area to retrieve
+# upper left lat/ upper left lon / lower right lat / lower right lon
+# NORTH/WEST/SOUTH/EAST
+area="72/-15/33/35"
+
+#directory to write files to.
+outdir='./data/'
+
+for month in '06'
+do
+     for day in {01..10}
+     do
+              echo "RETRIEVING  month $month day $day"
+              # retrieves pressure level files
+              $MDL ${PDL}/get_era5_cds.py  --3d   -y $year -m $month  -d $day --dir $outdir  -g  --area $area
+              # retrieves surface data files with all variables
+              $MDL ${PDL}/get_era5_cds.py  --2da  -y $year -m $month  -d $day --dir $outdir  -g  --area $area
+     done
+done
+
+# use the cfg file created for the conversion.
+mv new_era52arl.cfg era52arl.cfg
+
+#-----------------------------------------
+# convert data to ARL format
+
+# In practice you may want to run the following
+# in a separate script, after you have confirmed that
+# all the data downloaded properly.
+#-----------------------------------------
+
+MDL=./src_era52arl
+monthname='Jun'
+for month in '06'
+do
+     for day in {01..10}
+     do
+       echo '---------------------------------------------------------------------------------'
+       echo $MDL/era52arl -i${outdir}ERA5_$year.${monthname}${day}.3dpl.grib -a${outdir}ERA5_${year}.${monthname}${day}.2dpl.all.grib
+       $MDL/era52arl -i${outdir}ERA5_$year.${monthname}${day}.3dpl.grib -a${outdir}ERA5_${year}.${monthname}${day}.2dpl.all.grib
+       mv DATA.ARL ${outdir}ERA5_${year}${month}${day}.ARL
+       echo 'DONE ---------------------------------------------------------------------------------'
+     done
+done
+

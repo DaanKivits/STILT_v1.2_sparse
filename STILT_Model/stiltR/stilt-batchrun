@@ -1,0 +1,64 @@
+#!/bin/bash
+#SBATCH --job-name=StiltR
+#SBATCH -t 01:00:00
+#SBATCH --ntasks=1
+#SBATCH -p thin
+#SBATCH --mail-type=ALL
+#SBATCH --mail-user=daan.kivits@wur.nl
+
+
+## 17 footprints in 1 minute --> 3.5 sec/fp --> 1.5 hr per site (based on 60 days x 24 footprints per day, 75 particles)
+module load 2021 
+module load R/4.1.0-foss-2021a
+module load Anaconda3/2021.05
+module load NCO/5.0.1-foss-2021a
+
+source activate cte-hr-env
+
+R_LIBS=/home/dkivits/R/x86_64-pc-linux-gnu-library/4.1
+export PATH="$PATH:/home/dkivits/STILT/STILT_Model/merged_stilt_hysplit/"
+
+export MKL_NUM_THREADS=1
+
+# Run all stations:
+Rscript stilt_loop.r
+
+# Station-specific runs:
+#Rscript stilt.r 'TST'
+#Rscript stilt.r 'HEI' 
+#Rscript stilt.r 'GAT' 
+#Rscript stilt.r 'HPB'
+#Rscript stilt.r 'KRE'
+#Rscript stilt.r 'LIN'
+#Rscript stilt.r 'KIT'
+#Rscript stilt.r 'STK'
+#Rscript stilt.r 'CES'
+#Rscript stilt.r 'LUT'
+#Rscript stilt.r 'SAC'
+#Rscript stilt.r 'IPR'
+#Rscript stilt.r 'FRE'
+#Rscript stilt.r 'GNS'
+#Rscript stilt.r 'COU'
+#Rscript stilt.r 'AND'
+#Rscript stilt.r 'OVS'
+#Rscript stilt.r '2MV'
+#Rscript stilt.r 'ROC'
+#Rscript stilt.r 'ZWT'
+#Rscript stilt.r 'WMS'
+
+#Rscript stilt.r 'RHI_UW' 
+#Rscript stilt.r 'RHI_DW'
+#Rscript stilt.r 'BOR_UW' 
+#Rscript stilt.r 'BOR_DW' 
+#Rscript stilt.r 'LYO_UW' 
+#Rscript stilt.r 'LYO_DW' 
+#Rscript stilt.r 'LIL_UW' 
+#Rscript stilt.r 'LIL_DW' 
+#Rscript stilt.r 'LUX_UW' 
+#Rscript stilt.r 'LUX_DW' 
+#Rscript stilt.r 'RUR_UW' 
+#Rscript stilt.r 'RUR_DW' 
+#Rscript stilt.r 'BER_UW' 
+#Rscript stilt.r 'BER_DW' 
+#Rscript stilt.r 'MUN_UW' 
+#Rscript stilt.r 'MUN_DW'

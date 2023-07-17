@@ -1,0 +1,101 @@
+Revision May 22, 2003
+
+Changes made to eqvlat to accomodate the following special situations:
+
+  1. if lat1 .eq. lat2, returned value will be lat1 (reduced to between -90.
+     and 90.).
+  2. If either lat1 or lat2 is 90. (or -90.) then 90. (or -90.) will be
+     returned.  This reflects the fact that, for y fixed (-90. .lt. y .lt. 90.),
+     as x -> 90. (or -90.), eqvlat(x,y) ->90. (or -90.)  This limiting
+     case of tangent latitude 90. is a polar stereographic projection,
+     for which the scale at 90. is a maximum, and therefore greater than the
+     other latitude y.  Thus, eqvlat(90.,60.) returns 90., although the
+     scale at 90. will be greater than at 60. For eqvlat(90.,-90.), the
+     limit process is ambiguous; for the sake of symmetry, such a case
+     will return 0.
+
+Use of INCLUDE file cmapf.fi
+
+PARAMETERs defined in cmapf.fi include PI, RADPDG (the number of radians in one
+degree) DGPRAD (the number of degrees per radian) the default radius of the
+Earth, and the size of the STCPRM arrays containing the projection information.
+
+Instead of using REAL STCPRM(9), you can write
+
+       INCLUDE 'cmapf.fi'
+       REAL STCPRM(k_maparam)
+
+to anticipate the possibility that the size of the STCPRM map paramater arrays
+may change in future updates.
+
+
+Revision Feb 12, 2002
+
+To facilitate the transfer of vector wind data to and from Lat-Lon grids, we
+have re-defined the behavior of the following SUBROUTINES:
+CC2GXY, CG2CXY, CC2GLL, CG2CLL and CXY2LL.  We have also added the following new
+routines: CG2WXY, CW2GXY, CG2WLL and CW2GLL.
+
+The change in behavior applies only at, and within 1 degree (111 km) of, the
+North and South poles.  Elsewhere, the behavior is unchanged.
+
+Wind vector data, (U- and V- components) are transformed between three
+coordinate systems:
+(G, or Grid) - the U- and V- components are parallel to the x- and y- coordinate
+	lines of the grid.
+(C, or Cartographic):  U-component in the East direction, V in the North
+	direction, except at the North and South Poles.
+(W or WMO reporting convention): same as Cartographic, except that within one
+	degree of the pole, wind reporting is revised by aligning a compass rose with
+   "North" in the direction of the Greenwich meridian, and defining U- and V-
+   components accordingly.
+
+In a typical Lat-Lon grid, the row of the grid corresponding to the 90 or -90
+	degree latitude has many separate points, all of which represent the North
+   Pole but with different nominal longitudes.  The U- and V- components are
+   specified as if on a compass rose, aligned with "South" toward the nominal
+   longitude, and North toward the longitude 180 degrees away.  Thus, although
+   it is the same wind at the same point, the U- and V- components differ
+   depending on the longitude.  At the North pole, the gridded U-V values for
+   the nominal 180 longitude correspond to the WMO standard, while at the South
+   pole, a nominal 0 degree longitude will correspond to the WMO standard.
+
+The behavior of the SUBROUTINES has been changed as follows:
+
+CXY2LL(PARMAP,X,Y,XLAT,XLONG): 	Returns, as XLAT and XLONG, the latitude and
+	longitude of the grid point whose coordinates are given by X,Y.  If XLAT=90.,
+   XLONG will be set to 180.; if XLAT=-90., XLONG will be set to zero.
+   Previously, at the poles, the returned value of XLONG was the value of REFLON
+   which STLMBR used to initialize the projection.
+
+CG2CLL(PARMAP,XLAT,XLONG, UG,VG, UE,VN), CC2GLL(PARMAP,XLAT,XLONG, UE,VN, UG,VG)
+	Everywhere except at the poles, UE and VN are treated as the East and North
+	components of the wind, respectively, corresponding to the wind with grid
+   components UG,VG.  At the poles, UE and VN are components in the East and
+   North direction of a compass rose aligned with the XLONG meridian.  This will
+   allow the user to populate the points of a Lat-Lon grid according to the
+   usual definitions.  Previously, within one degree (111km) of the poles, UE
+   and VN were treated according to the WMO reporting convention.
+
+CG2CXY(PARMAP, X,Y, UG,VG, UE,VN) and CC2GXY(PARMAP, X,Y, UE,VN, UG,VG):
+	Everywhere except at the poles, UE and VN are treated as the East and North
+   components of the wind, respectively, corresponding to the wind with grid
+   components UG,VG.  At the poles, the UE and VN components are treated
+   according to the WMO conventions, with a nominal longitude of 180 at the
+   North Pole and 0 at the South Pole.  Previously, within one degree (111km) of
+   the poles, UE and VN were treated according to the WMO reporting convention.
+
+CG2WLL(PARMAP,XLAT,XLONG, UG,VG, UE,VN), CW2GLL(PARMAP,XLAT,XLONG, UE,VN, UG,VG)
+CG2WXY(PARMAP, X,Y, UG,VG, UE,VN) and CW2GXY(PARMAP, X,Y, UE,VN, UG,VG):
+	UE and VN will be treated as wind components based on the World
+   Meteorological Organization (WMO) reporting standards.  That is, everywhere
+   except within a radius of one degree (111km) of the poles, UE and VN are the
+   East and North components of the wind, respectively, corresponding to the
+   wind with grid components UG,VG. Within one degree of either pole, UE and VN
+   will be components based on a compass rose oriented with "North" toward the
+   Greenwich (0 degree) meridian).  This is the behavior previously defined for
+   CG2CLL, CC2GLL, CG2CXY and CC2GXY.
+
+Radius of the Earth has been reduced by 3.73 km to agree with that assumed for
+   GRIB grids.  This will cause grids setup by stcm1p to cover a slightly larger
+   range of latitudes and longitudes.

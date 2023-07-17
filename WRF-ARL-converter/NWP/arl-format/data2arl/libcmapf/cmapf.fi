@@ -1,0 +1,15 @@
+C*  REARTH=6356.766  from U.S. Standard Atmosphere, 1976
+C*  REARTH=6367.47   for spherical earths in GRIB grids
+C*  REARTH=6371.2    original assumption for CMAPF routines.
+C*                   source lost, probably old NWPC grids.
+
+      PARAMETER (pi=3.14159265358979,pi_2=pi/2.)
+      parameter (dgprad=180./pi,radpdg=pi/180.)
+
+
+      PARAMETER (REARTH=6367.47)
+      parameter (k_gama=1, k_reflon=k_gama+1)
+      parameter (k_x0=k_reflon+1, k_y0=k_x0+1)
+      parameter (k_crot=k_y0+1, k_srot=k_crot+1, k_gdszeq=k_srot+1)
+      parameter (k_n1dgr=k_gdszeq+1,k_s1dgr=k_n1dgr+1)
+      parameter (k_maparam=k_s1dgr)

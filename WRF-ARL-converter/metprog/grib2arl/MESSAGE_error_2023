@@ -1,0 +1,104 @@
+ Command Line Arguments: 
+   Cntr -           60         -80
+   Grid -            3
+   Size -          100         100          20
+   SfcP -            1
+   Rain -            6
+   Init -            1
+ ---------------------------------------------------------
+ Opened file: /scratch-shared/awoude/ERA5/out/ERA5-202
+ -----------------------------------------------------
+ SUBROUTINE analyze ...
+ Input buffer allocation:        63222
+ First time period found:           23           1          22           0
+ GRIB code tables set for data center:           98 ECM 
+ Vertical levels in kgds(19):            0
+ Vertical levels from levels:            0
+ Vertical level allocation:          100
+ New level found:            1   1.00000000    
+ Upper level variable match: RELH
+ Variable applied to level:            1   Max=          20
+ Input data array from North to South
+ Input data corner and spacing:     72.000   345.000    -0.250     0.250
+ Input data array allocation (nlon,nlat):          201         157
+ Bit map array allocation:    31557
+ Upper level variable match: TEMP
+ Variable applied to all levels!
+ Upper level variable match: HGTS
+ Variable applied to all levels!
+ Upper level variable match: UWND
+ Variable applied to all levels!
+ Upper level variable match: VWND
+ Variable applied to all levels!
+ Upper level variable match: WWND
+ Variable applied to all levels!
+ New level found:            2   3.00000000    
+ Upper level variable match: RELH
+ Variable applied to level:            2   Max=          20
+ New level found:            3   50.0000000    
+ Upper level variable match: RELH
+ Variable applied to level:            3   Max=          20
+ New level found:            4   100.000000    
+ Upper level variable match: RELH
+ Variable applied to level:            4   Max=          20
+ New level found:            5   250.000000    
+ Upper level variable match: RELH
+ Variable applied to level:            5   Max=          20
+ New level found:            6   350.000000    
+ Upper level variable match: RELH
+ Variable applied to level:            6   Max=          20
+ New level found:            7   500.000000    
+ Upper level variable match: RELH
+ Variable applied to level:            7   Max=          20
+ New level found:            8   650.000000    
+ Upper level variable match: RELH
+ Variable applied to level:            8   Max=          20
+ New level found:            9   700.000000    
+ Upper level variable match: RELH
+ Variable applied to level:            9   Max=          20
+ New level found:           10   750.000000    
+ Upper level variable match: RELH
+ Variable applied to level:           10   Max=          20
+ New level found:           11   800.000000    
+ Upper level variable match: RELH
+ Variable applied to level:           11   Max=          20
+ New level found:           12   825.000000    
+ Upper level variable match: RELH
+ Variable applied to level:           12   Max=          20
+ New level found:           13   850.000000    
+ Upper level variable match: RELH
+ Variable applied to level:           13   Max=          20
+ New level found:           14   875.000000    
+ Upper level variable match: RELH
+ Variable applied to level:           14   Max=          20
+ New level found:           15   900.000000    
+ Upper level variable match: RELH
+ Variable applied to level:           15   Max=          20
+ New level found:           16   925.000000    
+ Upper level variable match: RELH
+ Variable applied to level:           16   Max=          20
+ New level found:           17   950.000000    
+ Upper level variable match: RELH
+ Variable applied to level:           17   Max=          20
+ New level found:           18   975.000000    
+ Upper level variable match: RELH
+ Variable applied to level:           18   Max=          20
+ New level found:           19   1000.00000    
+ Upper level variable match: RELH
+ Variable applied to level:           19   Max=          20
+ Surface variable match: U10M
+ Surface variable match: V10M
+ Surface variable match: T02M
+ Surface variable match: TPP6
+ Input buffer allocation:        94778
+ Surface variable match: SHGT
+ Surface variable match: PBLH
+ New time period found:           23           1          22           1
+ New time period found:           23           1          22           2
+ New time period found:           23           1          22           3
+  
+ Number of 2d & 3d variables:            6  1726572576
+ ---------------------------------------------------------
+ SUBROUTINE setgrid ...
+ Configured global lat/lon output grid
+ Output array allocation:          201         157

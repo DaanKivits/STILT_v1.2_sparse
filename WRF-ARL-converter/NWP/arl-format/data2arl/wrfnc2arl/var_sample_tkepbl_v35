@@ -1,0 +1,91 @@
+34
+Sample file containing variable specifications for the wrfnc2arl program
+
+$Id: var_sample_tkepbl_v35,v 1.1 2013/07/18 21:20:55 trn Exp $
+
+The format of this file is as follows:
+
+!   Header:
+!         1st line: contains integer (list-directed I/O) ndatlin: 
+!                   number of data lines to follow the header
+!         subsequent lines: any number of header lines (ignored), followed
+!         by line with the string ENDHEADER in columns 1-9
+!   Data lines: (ndatlin lines, each containing in list-directed I/O format)
+! VNAME    4-character variable name, enclosed in ''
+! STA_XY   1-character xy-staggering indicator, one of ('x', 'y', or ' '), case-insensitive
+! STA_Z    1-character z-staggering indicator, one of ('z', or ' '), case-insensitive
+! I_23D    integer dimensionality indicator, either 2 or 3 (for 2d/3d fields)
+! VLABEL   netcdf variable label, enclosed in ''
+! CNVRT    real conversion factor to be applied to data before output
+! ADD      real offset to be added to input before conversion factor is applied
+
+ VNAME  STA_XY STA_Z I_23D VLABEL               CNVRT    ADD
+if (.not. fluxflg): (ndatlin=25)
+ 'UWND' 'X'    ' '   3      'U'                 1.0      0.0
+ 'VWND' 'Y'    ' '   3      'V'                 1.0      0.0
+ 'DZDT' ' '    'Z'   3      'W'                 1.0      0.0
+
+if (fluxflg): (ndatlin=33)
+ 'MUU0' 'X'    ' '   2     'MUU'                1.0      0.0
+ 'MUV0' 'Y'    ' '   2     'MUV'                1.0      0.0
+ 'UWND' 'X'    ' '   3     'AVGFLX_RUM'         1.0      0.0
+ 'VWND' 'Y'    ' '   3     'AVGFLX_RVM'         1.0      0.0
+ 'WWND' ' '    'Z'   3     'AVGFLX_WWM'         1.0      0.0
+ 'CFU1' ' '    'Z'   3     'CFU1'               1.0      0.0
+ 'CFD1' ' '    'Z'   3     'CFD1'               1.0      0.0
+ 'DFU1' ' '    ' '   3     'DFU1'               1.0      0.0
+ 'EFU1' ' '    ' '   3     'EFU1'               1.0      0.0
+ 'DFD1' ' '    ' '   3     'DFD1'               1.0      0.0
+ 'EFD1' ' '    ' '   3     'EFD1'               1.0      0.0
+
+unused:
+ 'MUU0' 'X'    ' '   3     'MU_U'               1.0      0.0
+ 'RUM0' 'X'    ' '   3     'RU_M'               1.0      0.0
+ 'MUV0' 'Y'    ' '   3     'MU_V'               1.0      0.0
+ 'RVM0' 'Y'    ' '   3     'RV_M'               1.0      0.0
+ 'RW00' ' '    'Z'   3     'RW'                 0.01     0.0
+ 'WW00' ' '    'Z'   3     'WW'                 1.0      0.0
+ 'WWND' ' '    'Z'   3     'WW_M'               0.01     0.0
+ 'PH00' ' '    'Z'   3     'PH'                 1.0      0.0
+ 'PHB0' ' '    'Z'   3     'PHB'                1.0      0.0
+ 'MFLX' ' '    ' '   2     'MASS_FLUX'          1.0      0.0
+ 'TKEN' ' '    'Z'   3     'TKE_PBL'            1.0      0.0
+ 'TKEN' ' '    ' '   3     'TKE'                1.0      0.0
+ 'NPCP' ' '    ' '   2     'RAINNC'             1.0      0.0
+ 'CPCP' ' '    ' '   2     'RAINC'              1.0      0.0
+
+ENDHEADER
+ 'MUU0' 'X'    ' '   2     'MUU'                1.0      0.0
+ 'MUV0' 'Y'    ' '   2     'MUV'                1.0      0.0
+ 'UWND' 'X'    ' '   3     'AVGFLX_RUM'         1.0      0.0
+ 'VWND' 'Y'    ' '   3     'AVGFLX_RVM'         1.0      0.0
+ 'WWND' ' '    'Z'   3     'AVGFLX_WWM'         1.0      0.0
+ 'CFU1' ' '    'Z'   3     'CFU1'               1.0      0.0
+ 'CFD1' ' '    'Z'   3     'CFD1'               1.0      0.0
+ 'DFU1' ' '    ' '   3     'DFU1'               1.0      0.0
+ 'EFU1' ' '    ' '   3     'EFU1'               1.0      0.0
+ 'DFD1' ' '    ' '   3     'DFD1'               1.0      0.0
+ 'EFD1' ' '    ' '   3     'EFD1'               1.0      0.0
+ 'TKEN' ' '    'Z'   3     'TKE_PBL'            1.0      0.0
+ 'MSFT' ' '    ' '   2     'MAPFAC_M'           1.0      0.0
+ 'MSFU' 'X'    ' '   2     'MAPFAC_U'           1.0      0.0
+ 'MSFV' 'Y'    ' '   2     'MAPFAC_V'           1.0      0.0
+ 'ALT0' ' '    ' '   3     'ALT'                1.0      0.0
+ 'MUBA' ' '    ' '   2     'MUB'                1.0      0.0
+ 'MUPE' ' '    ' '   2     'MU'                 1.0      0.0
+ 'THET' ' '    ' '   3     'T'                  1.0      300.0
+ 'PRES' ' '    ' '   3     'PB'                 0.01     0.0
+ 'PPRE' ' '    ' '   3     'P'                  0.01     0.0
+ 'SPHU' ' '    ' '   3     'QVAPOR'             1.0      0.0
+ 'SHTF' ' '    ' '   2     'HFX'                1.0      0.0
+ 'USTR' ' '    ' '   2     'UST'                1.0      0.0
+ 'LHTF' ' '    ' '   2     'LH'                 1.0      0.0
+ 'SHGT' ' '    ' '   2     'HGT'                1.0      0.0
+ 'PRSS' ' '    ' '   2     'PSFC'               0.01     0.0
+ 'T02M' ' '    ' '   2     'T2'                 1.0      0.0
+ 'U10M' ' '    ' '   2     'U10'                1.0      0.0
+ 'V10M' ' '    ' '   2     'V10'                1.0      0.0
+ 'HPBL' ' '    ' '   2     'PBLH'               1.0      0.0
+ 'SOLW' ' '    ' '   2     'SMOIS'              1.0      0.0
+ 'DSWF' ' '    ' '   2     'SWDOWN'             1.0      0.0
+ 'DLWF' ' '    ' '   2     'GLW'                1.0      0.0

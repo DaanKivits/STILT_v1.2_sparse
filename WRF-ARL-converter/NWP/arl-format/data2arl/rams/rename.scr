@@ -1,0 +1,13 @@
+mv adim2.f90 adim2.f
+mv cfgset.f90 cfgset.f
+mv comp_arl.f90 comp_arl.f
+mv juldate.f90 juldate.f
+mv module_anheader.f90 module_anheader.f
+mv pakini.f90 pakini.f
+mv pakinp.f90 pakinp.f
+mv pakndx.f90 pakndx.f
+mv pakout.f90 pakout.f
+mv pakrec.f90 pakrec.f
+mv pakset.f90 pakset.f
+mv rams_arl.f90 rams_arl.f
+mv readrams.f90 readrams.f

@@ -1,0 +1,38 @@
+Model Type:         ECMG
+Grid Numb:            99
+Vert Coord:            2
+Pole Lat:               72.000
+Pole Lon:               35.000
+Ref Lat:                 0.250
+Ref Lon:                 0.250
+Grid Size:               0.000
+Orientation:             0.000
+Cone Angle:              0.000
+Sync X Pt:               1.000
+Sync Y Pt:               1.000
+Sync Lat:               33.000
+Sync Lon:              345.000
+Reserved:                0.000
+Numb X pt:           201
+Numb Y pt:           157
+Numb Levels:          20
+Level  0:           .00000  6 SHGT TPP6 U10M V10M T02M PBLH
+Level  1:           1000.0  6 HGTS TEMP UWND VWND WWND RELH
+Level  2:           975.00  6 HGTS TEMP UWND VWND WWND RELH
+Level  3:           950.00  6 HGTS TEMP UWND VWND WWND RELH
+Level  4:           925.00  6 HGTS TEMP UWND VWND WWND RELH
+Level  5:           900.00  6 HGTS TEMP UWND VWND WWND RELH
+Level  6:           875.00  6 HGTS TEMP UWND VWND WWND RELH
+Level  7:           850.00  6 HGTS TEMP UWND VWND WWND RELH
+Level  8:           825.00  6 HGTS TEMP UWND VWND WWND RELH
+Level  9:           800.00  6 HGTS TEMP UWND VWND WWND RELH
+Level 10:           750.00  6 HGTS TEMP UWND VWND WWND RELH
+Level 11:           700.00  6 HGTS TEMP UWND VWND WWND RELH
+Level 12:           650.00  6 HGTS TEMP UWND VWND WWND RELH
+Level 13:           500.00  6 HGTS TEMP UWND VWND WWND RELH
+Level 14:           350.00  6 HGTS TEMP UWND VWND WWND RELH
+Level 15:           250.00  6 HGTS TEMP UWND VWND WWND RELH
+Level 16:           100.00  6 HGTS TEMP UWND VWND WWND RELH
+Level 17:           50.000  6 HGTS TEMP UWND VWND WWND RELH
+Level 18:           3.0000  6 HGTS TEMP UWND VWND WWND RELH
+Level 19:           1.0000  6 HGTS TEMP UWND VWND WWND RELH

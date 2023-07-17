@@ -1,0 +1,18 @@
+#----------------------------------------------------------------
+# University of Houston
+# Air Quality Modeling and Monitoring Center
+# 218 Old Science Building
+# Houston, TX 77204-5048
+# USA
+#
+# email: sbkim@math.uh.edu (Dr. Seung-Bum Kim)
+#        dwbyun@math.uh.edu (Dr. Daewon W. Byun)
+#----------------------------------------------------------------
+
+cd ./lib
+\rm *.o *.a
+make -f Make.lib
+#
+cd ..
+\rm ramstoarl.exe *.o *.mod
+make -f Make.main

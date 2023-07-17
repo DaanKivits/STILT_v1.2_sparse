@@ -1,0 +1,90 @@
+20
+Sample file containing variable specifications for the geos2arl program
+
+$Id: var_geosfp.txt,v 1.2 2013/08/28 14:31:40 trn Exp $
+
+The format of this file is as follows:
+
+!   Header:
+!         1st line: contains integer (list-directed I/O) ndatlin:
+!                   number of data lines to follow the header
+!         subsequent lines: any number of header lines (ignored), followed
+!         by line with the string ENDHEADER in columns 1-9
+!   Data lines: (ndatlin lines, each containing in list-directed I/O format)
+! VNAME    4-character variable name, enclosed in ''
+! STA_XY   1-character xy-staggering indicator, one of ('x', 'y', or ' '), case-insensitive
+!          (read in, but ignored)
+! STA_Z    1-character z-staggering indicator, one of ('z', or ' '), case-insensitive
+!          (read in, but ignored)
+! I_23D    integer dimensionality indicator, either 2 or 3 (for 2d/3d fields)
+! AVG      averaging indicator:
+!          i_tavg >= 0: navg=max(1,i_tavg)
+!           i_tavg=0 (input/output is instantaneous valid at end of time period), or
+!           i_tavg=1 (input/output is average over output interval): 
+!                    read the current file, delta t=0
+!           i_tavg>1 (input is average over a shorter interval):
+!                    read and average for delta t = 0, -1, ..., -navg
+!                    3: tavg1 -> tavg3
+!          i_tavg=-1: navg=2
+!           i_tavg=-1 (input is average, usually over a shorter interval, need instantaneous output values): 
+!                    read and average for delta t = 0, +1
+!          i_tavg<-1: navg=-i_tavg
+!           i_tavg<-1 (input is instantaneous values, compute average)
+!                    read and average for delta t = 0, ...,  -navg (use 1/2 weight at endpoints)
+!                 -2: inst3 -> tavg3
+!
+! VLABEL   netcdf variable label, enclosed in ''
+! FNAME    file-name identifier, enclosed in ''
+! CNVRT    real conversion factor to be applied to data before output
+! ADD      real offset to be added to input before conversion factor is applied
+
+ VNAME  STA_XY STA_Z I_23D AVG   VLABEL   FNAME             CNVRT ADD   Comments
+ 'UWND' ' '    ' '   3     1     'U'      'tavg3_3d_asm_Nv' 1.0   0.0   ** In tavg3_3d_udt_Nv in 5.7.2 **
+ 'VWND' ' '    ' '   3     1     'V'      'tavg3_3d_asm_Nv' 1.0   0.0   ** In tavg3_3d_udt_Nv in 5.7.2 **
+ 'WWND' ' '    ' '   3     1     'OMEGA'  'tavg3_3d_asm_Nv' 0.01  0.0   ** In tavg3_3d_udt_Nv in 5.7.2 **; convert to mb
+ 'APRE' ' '    ' '   3     1     'DELP'   'tavg3_3d_udt_Nv' 0.01  0.0   ** Only needed if PL unavailable **; convert to mb
+ 'APRE' ' '    ' '   3     1     'PL'     'tavg3_3d_nav_Nv' 0.01   0.0  ** Only available in 5.10 **; convert to mb
+ 'AHGT' ' '    ' '   3     1     'H'      'tavg3_3d_nav_Nv' 1.0   0.0   ** Only available in 5.10 **
+ 'TEMP' ' '    ' '   3     0     'T'      'inst3_3d_asm_Nv' 1.0   0.0
+ 'ATEM' ' '    ' '   3    -2     'T'      'inst3_3d_asm_Nv' 1.0   0.0   ** Only needed if H unavailable: Compute avg T from inst3 values
+ 'PRES' ' '    ' '   3     0     'PL'     'inst3_3d_asm_Nv' 0.01  0.0   ** Only available in 5.10 **; convert to mb
+ 'PRES' ' '    ' '   3     0     'DELP'   'inst3_3d_asm_Nv' 0.01  0.0   ** Only needed if PL unavailable **; convert to mb
+ 'HGTS' ' '    ' '   3     0     'H'      'inst3_3d_asm_Nv' 1.0   0.0   ** Only available in 5.10 **
+ 'SPHU' ' '    ' '   3     0     'QV'     'inst3_3d_asm_Nv' 1.0   0.0
+ 'ASPH' ' '    ' '   3    -2     'QV'     'inst3_3d_asm_Nv' 1.0   0.0   ** Only needed if H unavailable: Compute avg Q from inst3 values
+ 'SHTF' ' '    ' '   2     -1    'HFLUX'  'tavg1_2d_flx_Nx' 1.0   0.0
+ 'USTR' ' '    ' '   2     -1    'USTAR'  'tavg1_2d_flx_Nx' 1.0   0.0
+ 'LHTF' ' '    ' '   2     -1    'EFLUX'  'tavg1_2d_flx_Nx' 1.0   0.0
+ 'SHGT' ' '    ' '   2     0     'PHIS'   'inst3_3d_asm_Nv' 0.102 0.0   1/9.81
+ 'PRSS' ' '    ' '   2     0     'PS'     'inst3_3d_asm_Nv' 0.01  0.0   convert to mb
+ 'APRS' ' '    ' '   2     1     'PS'     'tavg3_3d_asm_Nv' 0.01  0.0   ** In tavg3_3d_udt_Nv in 5.7.2 **; convert to mb
+ 'T02M' ' '    ' '   2     0     'T2M'    'inst3_2d_asm_Nx' 1.0   0.0
+ 'U10M' ' '    ' '   2     3     'U10M'   'tavg1_2d_slv_Nx' 1.0   0.0
+ 'V10M' ' '    ' '   2     3     'V10M'   'tavg1_2d_slv_Nx' 1.0   0.0
+ 'HPBL' ' '    ' '   2     -1    'PBLH'   'tavg1_2d_flx_Nx' 1.0   0.0
+ 'DSWF' ' '    ' '   2     -1    'SWGDN'  'tavg1_2d_lfo_Nx' 1.0   0.0   ** Only available in 5.10 **
+ 'DLWF' ' '    ' '   2     -1    'LWGNT'  'tavg1_2d_lfo_Nx' 1.0   0.0   ** Only available in 5.10 ** LWGNT (? net, not downward)
+
+ VNAME  STA_XY STA_Z I_23D AVG   VLABEL   FNAME             CNVRT ADD
+
+ENDHEADER
+ 'UWND' ' '    ' '   3     1     'U'      'tavg3_3d_asm_Nv' 1.0   0.0
+ 'VWND' ' '    ' '   3     1     'V'      'tavg3_3d_asm_Nv' 1.0   0.0
+ 'WWND' ' '    ' '   3     1     'OMEGA'  'tavg3_3d_asm_Nv' 0.01  0.0
+ 'APRE' ' '    ' '   3     1     'PL'     'tavg3_3d_nav_Nv' 0.01  0.0
+ 'AHGT' ' '    ' '   3     1     'H'      'tavg3_3d_nav_Nv' 1.0   0.0
+ 'TEMP' ' '    ' '   3     0     'T'      'inst3_3d_asm_Nv' 1.0   0.0
+ 'PRES' ' '    ' '   3     0     'PL'     'inst3_3d_asm_Nv' 0.01  0.0
+ 'HGTS' ' '    ' '   3     0     'H'      'inst3_3d_asm_Nv' 1.0   0.0
+ 'SPHU' ' '    ' '   3     0     'QV'     'inst3_3d_asm_Nv' 1.0   0.0
+ 'SHTF' ' '    ' '   2     -1    'HFLUX'  'tavg1_2d_flx_Nx' 1.0   0.0
+ 'USTR' ' '    ' '   2     -1    'USTAR'  'tavg1_2d_flx_Nx' 1.0   0.0
+ 'LHTF' ' '    ' '   2     -1    'EFLUX'  'tavg1_2d_flx_Nx' 1.0   0.0
+ 'SHGT' ' '    ' '   2     0     'PHIS'   'inst3_3d_asm_Nv' 0.102 0.0
+ 'PRSS' ' '    ' '   2     0     'PS'     'inst3_3d_asm_Nv' 0.01  0.0
+ 'APRS' ' '    ' '   2     1     'PS'     'tavg3_3d_asm_Nv' 0.01  0.0
+ 'T02M' ' '    ' '   2     0     'T2M'    'inst3_2d_asm_Nx' 1.0   0.0
+ 'U10M' ' '    ' '   2     3     'U10M'   'tavg1_2d_slv_Nx' 1.0   0.0
+ 'V10M' ' '    ' '   2     3     'V10M'   'tavg1_2d_slv_Nx' 1.0   0.0
+ 'HPBL' ' '    ' '   2     -1    'PBLH'   'tavg1_2d_flx_Nx' 1.0   0.0
+ 'DSWF' ' '    ' '   2     -1    'SWGDN'  'tavg1_2d_lfo_Nx' 1.0   0.0

@@ -1,0 +1,29 @@
+EXE = rams2arl.exe
+
+LIB1 = ./lib/librams.a
+LIB2 = ../library/libhysplit.a
+
+#FCOMP = f90
+FCOMP = xlf90
+
+#FFLAGS = -c -O -free -I.
+FFLAGS = -O  -c -I. -qarch=com -qmaxmem=8192
+
+.f.o:
+	rm -f $@
+	$(FCOMP) $(FFLAGS) $*.f
+
+MODULES = module_anheader.o
+
+FOBJS = adim2.o    \
+	cfgset.o     \
+	comp_arl.o     \
+	juldate.o     \
+	rams_arl.o     \
+	readrams.o 
+
+$(EXE) : $(MODULES) $(FOBJS)
+	$(FCOMP) -o $@ $(FOBJS) $(MODULES) $(LIB1) $(LIB2) 
+
+clean:
+	rm *.o *.mod

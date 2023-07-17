@@ -1,0 +1,8 @@
+mv anheader.f90 anheader.f
+mv hvlib_arl.f90 hvlib_arl.f
+mv polarst.f90 polarst.f
+mv rcio_arl.f90 rcio_arl.f
+mv rcomp.f90 rcomp.f
+mv revugrads.f90 revugrads.f
+mv misc_lib.F90 misc_lib.F
+mv utils_f.f90 utils_f.f
