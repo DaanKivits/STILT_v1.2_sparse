@@ -20,7 +20,7 @@ WRF-ARL-converter/metprog/mm5
 *.tar
 *.gz
 *.RData*
-*setStiltparam*
+STILT_Model/stiltR/Runs.done/*
 *.grb
 *.grib
 *.arl
