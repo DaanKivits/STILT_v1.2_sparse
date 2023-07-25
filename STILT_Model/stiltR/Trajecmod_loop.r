@@ -13,7 +13,6 @@ Trajecmod <- function(partarg=NULL, totpartarg=NULL, nodeoffset=NULL)
    
    
    # need to assign parameters; also save parameter setting in archive file with date in name
-   source("setStiltparam_loop.r")
    savename <- gsub(" ", ".", date())
    savename <- substring(savename,4)
    runs.done.dir <- NULL

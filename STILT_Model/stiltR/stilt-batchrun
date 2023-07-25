@@ -21,7 +21,7 @@ export PATH="$PATH:/home/dkivits/STILT/STILT_Model/merged_stilt_hysplit/"
 export MKL_NUM_THREADS=1
 
 # Run all stations:
-Rscript stilt_loop.r
+Rscript stilt_loop.r 'BRM'
 
 # Station-specific runs:
 #Rscript stilt.r 'TST'

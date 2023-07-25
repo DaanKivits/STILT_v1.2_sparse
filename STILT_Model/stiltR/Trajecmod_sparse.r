@@ -197,16 +197,16 @@ Trajecmod <- function(partarg=NULL, totpartarg=NULL, nodeoffset=NULL)
          if(day<10) x2<-paste(x2,"0",sep="")
          if(hr<10)  x3<-paste(x3,"0",sep="")
          
-         pathBinFootprintstation<-paste(pathBinFootprint,stationfile$code[i],"/",sep="")
+         pathBinFootprintstation<-paste(pathBinFootprint,station,"/",sep="")
          if (file.access(pathBinFootprintstation,0)!=0) 
          {
             system(paste("mkdir ",pathBinFootprintstation,sep=""))
          }
          
-         filename <- paste(pathBinFootprintstation,stationfile$code[i],"_",as.character(-nhrs),"h0",as.character(ftintr),
+         filename <- paste(pathBinFootprintstation,station,"_",as.character(-nhrs),"h0",as.character(ftintr),
                          "h_",cyr,x1,cmon,x2,cday,x3,chr,"_",gridtag,cendian,".d",sep="")
    #     Jan's version with height in filename
-   #     filename <- paste(pathBinFootprintstation,stationfile$code[i],"_",as.character(-nhrs),"h0",as.character(ftintr),
+   #     filename <- paste(pathBinFootprintstation,station,"_",as.character(-nhrs),"h0",as.character(ftintr),
    #                    "h_",cyr,x1,cmon,x2,cday,x3,chr,"_",sprintf("%5.5d",as.integer(agl)),"_",gridtag,cendian,".d",sep="")
    
          if (file.exists(filename)) 
@@ -267,15 +267,15 @@ Trajecmod <- function(partarg=NULL, totpartarg=NULL, nodeoffset=NULL)
    #              if(day<10) x2<-paste(x2,"0",sep="")
    #              if(hr<10)  x3<-paste(x3,"0",sep="")
    #             
-   #              pathBinFootprintstation<-paste(pathBinFootprint,stationstationfile$code[i],"/",sep="")
+   #              pathBinFootprintstation<-paste(pathBinFootprint,station,"/",sep="")
    #              if (file.access(pathBinFootprintstation,0)!=0) {
    #               system(paste("mkdir ",pathBinFootprintstation,sep=""))
    #              }
    #             
-   ##             filename<-paste(pathBinFootprintstation,stationfile$code[i],"_",as.character(-nhrs),"h0",as.character(ftintr),
+   ##             filename<-paste(pathBinFootprintstation,station,"_",as.character(-nhrs),"h0",as.character(ftintr),
    ##                              "h_",cyr,x1,cmon,x2,cday,x3,chr,"_",gridtag,cendian,".d",sep="")
    ##             Jan's version with height in filename
-   #              filename<-paste(pathBinFootprintstation,stationfile$code[i],"_",as.character(-nhrs),"h0",as.character(ftintr),
+   #              filename<-paste(pathBinFootprintstation,station,"_",as.character(-nhrs),"h0",as.character(ftintr),
    #                              "h_",cyr,x1,cmon,x2,cday,x3,chr,"_",sprintf("%5.5d",as.integer(agl)),"_",gridtag,cendian,".d",sep="")
                  
                   print(paste("Writing binary footprint file: ",filename))
@@ -363,8 +363,7 @@ Trajecmod <- function(partarg=NULL, totpartarg=NULL, nodeoffset=NULL)
          assignr(paste("stiltresult", part, sep=""), result, path=path_stiltresult)
       }
       rownum <- rownum+1
-
-   
+     
       ##### calculate footprint, assign in object ########
       if (footprintTF) 
       {
@@ -387,6 +386,9 @@ Trajecmod <- function(partarg=NULL, totpartarg=NULL, nodeoffset=NULL)
          values  = foot$values
          times = foot$times
 
+         # check content of times
+         print(times[[1]])
+
 ##     # Construct longx,latx from info supplied in setStiltparam.r
          longx_1          <- seq(lon.ll,length.out=numpix.x,by=lon.res)
          latx_1           <- seq(lat.ll,length.out=numpix.y,by=lat.res)
@@ -405,7 +407,7 @@ Trajecmod <- function(partarg=NULL, totpartarg=NULL, nodeoffset=NULL)
 ##         # Read longx and latx (unstaggered from a wrfout file or a prepared file (Use ~/Python/RINGO/WriteWRFgridfile.r, this makes the file small and fast to read). 
        
 #            Write Output to newly created nc file
-             outfilename    <- paste(path, "footprint_", stationfile$code[i], '_', identname, ".nc", sep="")
+             outfilename    <- paste(path, "footprint_", station, '_', identname, ".nc", sep="")
              mv             <- -9999   # Fill Value
              dimt           <- ncdim_def( "Time","Timesteps", 1:nt, create_dimvar=TRUE)#, unlim=TRUE)
              dimx           <- ncdim_def( "Longitude","degrees E", longx[,1])
@@ -422,8 +424,7 @@ Trajecmod <- function(partarg=NULL, totpartarg=NULL, nodeoffset=NULL)
              ncvar_put(nc = nc, varid = nc_index_y, vals = index_y, start=c(1), count=c(-1))
              nc_close(nc)
        }
-      
-      ##### plot footprint ########
+            ##### plot footprint ########
       if (footplotTF) 
       {  # plot footprints
          foot <- getr(paste(identname, sep=""), path)

@@ -1,5 +1,5 @@
 Trajecfoot<-function(ident,part=NULL,timelabel=NULL,pathname="",foottimes=c(0,360),zlim=c(0,0),fluxweighting=NULL,coarse=1,dmassTF=T,
-                    vegpath="/deas/group/stilt/Vegetation/",numpix.x=376,numpix.y=324,lon.ll=-145,lat.ll=11,lon.res=1/4,lat.res=1/6,landcov="IGBP",wrfinput=NULL, sparse=TRUE){
+                    vegpath="/deas/group/stilt/Vegetation/",numpix.x=376,numpix.y=324,lon.ll=-145,lat.ll=11,lon.res=1/4,lat.res=1/6,landcov="IGBP",wrfinput=NULL, sparse=FALSE){
 # Creates footprint for individual particle runs
 # footrpints are in units of ppm/(micro-moles/m2/s)
 # 'ident'           is character value specifying the trajectory ensemble to look at 
@@ -268,12 +268,14 @@ gridresult         <- getgridp(min.x,max.x,min.y,max.y,numpix.x,numpix.y,coarse=
 
 # Sparse footprints --> create three matrix objects for output: index_x, index_y, footvalue
 # 'Normal' array-like footprints --> create object for output: 3d array (lat-lon-time)
-if sparse=False:
+if (sparse == TRUE)
    {#create 3d array for output
-    foot.arr       <- array(0,dim=c(numpix.y,numpix.x,length(foottimes)-1))
+   index_x = index_y = valuelist = timelist = list()
    } else {
-    index_x = index_y = footvalue = timelist = matrix(0)
+   foot.arr <- array(0,dim=c(numpix.y,numpix.x,length(foottimes)-1))
    }
+
+count = 0
 
 for(foottimespos in 1:(length(foottimes)-1))
    { #loop over time intervals
@@ -337,7 +339,6 @@ for (name in unique(emissname)){
 
         #get index pairs to extract surface pixels, for extracting emission grid (e.g. CO)
         yx         <- cbind(y,x)
-   	  print(yx)
         
         ##########BUDGET##########
         if(zlim[2]==0)
@@ -384,10 +385,7 @@ for (name in unique(emissname)){
         npixfx     <-length(xfine)
         npixfy     <-length(yfine)
 
-        influence <-sum(influence[selunix])/(npixfx*npixfy) #'dilute' influence over larger area of fine grid
-        if (sparse=True):
-             if (influence != 0):
-                  
+        influence <-sum(influence[selunix])/(npixfx*npixfy) #'dilute' influence over larger area of fine grid               
 
        } # for each gridcell...
 
@@ -397,43 +395,34 @@ emissgrid.all<-emissgrid.all+emissgrid/nparstilt #uses number of particles used 
 #JCL(5/23/2004)------- not normalize by 'foottimes',b/c want TIME-INTEGRATED footprint----------------#
 #foot.arr[,,foottimespos]<-emissgrid.all/(foottimes[foottimespos+1]-foottimes[foottimespos])
 #JCL(5/23/2004)------- not normalize by 'foottimes',b/c want TIME-INTEGRATED footprint----------------#
-if (sparse = True) {
-    for (x in 1:nrow(emisgrid.all))
-         for (y in 1:ncol(emisgrid.all))
-               if (emisgrid.all[x,y] != 0) {
-                  append(index_x, x)
-                  append(index_y, y)
-                  append(footvalue, emisgrid.all[x,y])
-                  append(timelist, foottimespos)
-                  }
-               }
-else {
+if (sparse == TRUE) {
+   foot_sparse <- create_sparse_matrix(emissgrid.all)
+   print(str(foot_sparse))
+   if (sum(foot_sparse$values) != 0){
+      count = count + 1
+      index_x = append(index_x, foot_sparse$index_x)
+      index_y = append(index_y, foot_sparse$index_y)
+      valuelist = append(valuelist, foot_sparse$values)
+      timelist = append(timelist, foottimes[foottimespos])
+      } 
+} else {
    foot.arr[,,foottimespos] <- emissgrid.all
-}
+   }
+} # end of loop over time intervals
+print(count)
+#print(emissgrid.all)
 
-#foot.arr[,,foottimespos] <- emissgrid.all
-
-} #end of loop over time intervals
-
-
-# [TO DO] Give correct dimensions to the empty lists for the sparse footprint creation
 
 #For horizontal grids (lower left corner of south-west gridcell: 11N,145W; resolution: 1/4 lon, 1/6 lat, 376 (x) times 324 (y))
-if (sparse = True) {
-   if( is.null(wrfinput)) {
-      dimnames(index_x) <- list(foottimes[1:(length(foottimes)-1)], seq(lon.ll,(lon.ll+(numpix.x-1)*lon.res),lon.res))
-      dimnames(index_y) <- list(foottimes[1:(length(foottimes)-1)], seq(lat.ll,(lat.ll+(numpix.x-1)*lat.res),lat.res))
-      dimnames(timelist) <-list(foottimes[1:(length(foottimes)-1)])
-   }
-   if(!is.null(wrfinput)) {
-      dimnames(index_x) <- list(round(latx[round(numpix.x/2),-dim(latx)[2]],2),round(longx[-dim(longx)[1],round(numpix.y/2)],2),foottimes[1:(length(foottimes)-1)])
-      dimnames(index_y) <- 
-      dimnames(timelist) <-
-   }
+if (sparse == TRUE) {
+   
+   return(list("values" = valuelist, "times" = timelist, "index_x" = index_x, "index_y" = index_y))
+
 } else {
    if( is.null(wrfinput)) dimnames(foot.arr) <- list(seq(lat.ll,(lat.ll+(numpix.y-1)*lat.res),lat.res),seq(lon.ll,(lon.ll+(numpix.x-1)*lon.res),lon.res),foottimes[1:(length(foottimes)-1)])
    if(!is.null(wrfinput)) dimnames(foot.arr) <- list(round(latx[round(numpix.x/2),-dim(latx)[2]],2),round(longx[-dim(longx)[1],round(numpix.y/2)],2),foottimes[1:(length(foottimes)-1)])
-}
    
-return(foot.arr)
+   return(foot.arr)
+
 }
+} # end of function Trajecfoot

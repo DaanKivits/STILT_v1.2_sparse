@@ -64,6 +64,11 @@ create_times <- function(station)
       lat <- 47.8015
       lon <- 11.0096
       agl <- 131.00
+   } else if(station == "BRM") {
+      #BRM
+      lat <- 47.1896
+      lon <- 8.1755
+      agl <- 1009.00
    } else if(station == "KRE") {
       #KRE
       lat <- 49.5833

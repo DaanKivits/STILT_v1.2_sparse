@@ -45,27 +45,27 @@ create_times <- function(stationfile, index)
    l <- list(jul = fjul, hours = hours)
    df <- data.frame(l)
       
-   # Filter mountain type sites
-   if (stationfile$type[index] == "2") {
-      print("This is a mountain site")
+   # # Filter mountain type sites
+   # if (stationfile$type[index] == "2") {
+   #    print("This is a mountain site")
 
-      if (stationfile$utc2lst_offset[index] >= 1) {
-         # Select only the hours between 23 and 04 local time for mountain sites
-         dfsubset <- subset(df, hours >= abs(22 + stationfile$utc2lst_offset[index] - 24) & hours <= (5 + stationfile$utc2lst_offset[index]))
-         fjul <- dfsubset$jul
+   #    if (stationfile$utc2lst_offset[index] >= 1) {
+   #       # Select only the hours between 23 and 04 local time for mountain sites
+   #       dfsubset <- subset(df, hours >= abs(22 + stationfile$utc2lst_offset[index] - 24) & hours <= (5 + stationfile$utc2lst_offset[index]))
+   #       fjul <- dfsubset$jul
 
-      } else {
-         # Select only the hours between 23 and 04 local time for mountain sites
-         dfsubset <- subset(df, hours >= (22 + stationfile$utc2lst_offset[index]) & hours <= (5 + stationfile$utc2lst_offset[index]))
-         fjul <- dfsubset$jul
-      }
-   } else {
-      print("This is a lowland site")
+   #    } else {
+   #       # Select only the hours between 23 and 04 local time for mountain sites
+   #       dfsubset <- subset(df, hours >= (22 + stationfile$utc2lst_offset[index]) & hours <= (5 + stationfile$utc2lst_offset[index]))
+   #       fjul <- dfsubset$jul
+   #    }
+   # } else {
+   #    print("This is a lowland site")
 
-      # Select only the hours between 11 and 16 local time for lowland sites
-      dfsubset <- subset(df, hours >= (10 + stationfile$utc2lst_offset[index]) & hours <= (17 + stationfile$utc2lst_offset[index]))
-      fjul <- dfsubset$jul
-   }
+   #    # Select only the hours between 11 and 16 local time for lowland sites
+   #    dfsubset <- subset(df, hours >= (10 + stationfile$utc2lst_offset[index]) & hours <= (17 + stationfile$utc2lst_offset[index]))
+   #    fjul <- dfsubset$jul
+   # }
 
    fjul <- round(fjul,6)
 

@@ -18,13 +18,16 @@ if (! exists("sourcepath")) {
 cat("stilt.r: using sourcepath", sourcepath, "\n")
 
 if (! file.exists(paste(sourcepath, "sourceall.r", sep=""))) stop('stilt.r: "sourcepath" is not a valid source path')
-source(paste(sourcepath,"sourceall.r",sep=""))
 
 # if args is not empty, then use the station from args
 # Check if args is character(0)
 if (!identical(args, character(0))) {
-cat("stilt.r: starting.. Station = ", station,"..\n")
 station <- args[1]
+cat("stilt.r: starting.. Station = ", station,"..\n")
+
+source('sourceall.r')
+sourceall(mode='single', sparse=TRUE)
+
 source('create_times.r')
 create_times(station)
 
@@ -60,10 +63,13 @@ if (!is.null(runs.done.dir)) {
 }
 
 } else {
-
 # if args is empty, then use the stationfile
 for (i in 1:nrow(stationfile)){
 cat("stilt.r: starting.. Station = ", stationfile$station[i],"..\n")
+
+source('sourceall.r')
+sourceall(mode='multi', sparse=TRUE)
+
 source('create_times_loop.r')
 create_times(stationfile, i)
 partinfo <- Sys.getenv(c("STILT_PART", "STILT_TOTPART","STILT_OFFSET"), unset = NA)	# get job partitioning info # new (tk 2011/05/15)
@@ -81,7 +87,7 @@ if (any(is.na(partinfo))) {
    nodeoffset <- as.integer(partinfo[[3]]) # new (tk 2011/05/17)
 }
 #Call Trajecmod function, store run info
-run.info <- Trajecmod(partarg=partarg, totpartarg=totpartarg, nodeoffset=nodeoffset)
+run.info <- Trajecmod_loop(partarg=partarg, totpartarg=totpartarg, nodeoffset=nodeoffset)
 
 #save run.info to object with date and time in name
 #example: ./Runs.done/setStiltparam.Mar..9.17:40:49.2004.r

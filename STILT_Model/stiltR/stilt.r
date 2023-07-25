@@ -23,9 +23,10 @@ if (! exists("sourcepath")) {
 cat("stilt.r: using sourcepath", sourcepath, "\n")
 
 if (! file.exists(paste(sourcepath, "sourceall.r", sep=""))) stop('stilt.r: "sourcepath" is not a valid source path')
-source(paste(sourcepath,"sourceall.r",sep=""))
 
+source('sourceall.r')
 source('create_times.r')
+sourceall(mode='single', sparse=FALSE)
 create_times(station)
 
 partinfo <- Sys.getenv(c("STILT_PART", "STILT_TOTPART","STILT_OFFSET"), unset = NA)	# get job partitioning info # new (tk 2011/05/15)
